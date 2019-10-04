@@ -1,0 +1,21 @@
+##################################
+## Generated for iso_cotp events #
+##################################
+## c: The connection the S7 communication is part of
+## is_orig: True if this reflects originator-side activity
+## pdu_type: iso_cotp types
+##
+event iso_cotp%(c: connection, is_orig: bool,
+                pdu_type: count
+                %);
+
+####################################################
+## Generated for communication and data to the PLC #
+####################################################
+## c: The connection the S7 communication is part of
+## is_orig: True if this reflects originator-side activity
+## self-explanatory parameters
+##
+event s7comm_data%(c: connection, is_orig: bool,
+                    data: string
+                    %);
