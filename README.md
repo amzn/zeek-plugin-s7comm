@@ -4,7 +4,7 @@ When running as part of your Zeek installation this plugin will produce two log 
 
 ## Installation and Usage
 
-`zeek-plugin-profinet` is distributed as a Zeek package and is compatible with the [`zkg`](https://docs.zeek.org/projects/package-manager/en/stable/zkg.html) command line tool.
+`zeek-plugin-s7comm` is distributed as a Zeek package and is compatible with the [`zkg`](https://docs.zeek.org/projects/package-manager/en/stable/zkg.html) command line tool.
 
 ## Sharing and Contributing
 
