@@ -1,8 +1,9 @@
-## Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
-## SPDX-License-Identifier: BSD-3-Clause
+##! Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+##! SPDX-License-Identifier: BSD-3-Clause
 
 ##! Implements base functionality for S7comm analysis.
-##! Generates the S7comm.log file, containing some information about the S7comm headers.
+##! Generates the iso-cotp.log file, containing some information about the iso-cotp pdu type.
+##! Generates the S7comm.log file, containing some information about the S7comm data.
 
 module S7comm;
 
