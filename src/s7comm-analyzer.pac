@@ -7,25 +7,25 @@ connection S7COMM_Conn(bro_analyzer: BroAnalyzer) {
     };
 
 %header{
-    #define S7_HEADER         0x32
+    #define S7_HEADER           0x32
     //cotp_types
-    #define EXPEDITED_DATA         0x10
-    #define CLTP_USER_DATA         0x20
-    #define EXPEDITED_DATA_ACK     0x40
-    #define REJECT             0x50
+    #define EXPEDITED_DATA      0x10
+    #define CLTP_USER_DATA      0x20
+    #define EXPEDITED_DATA_ACK  0x40
+    #define REJECT              0x50
     // #define ACK_DATA         0x60
-    #define ACK_DATA         0x70
-    #define DISCONNECT_REQUEST     0x80
-    #define DISCONNECT_CONFIRM     0xc0
+    #define ACK_DATA            0x70
+    #define DISCONNECT_REQUEST  0x80
+    #define DISCONNECT_CONFIRM  0xc0
     #define CONNECT_CONFIRM     0xd0
     #define CONNECT_REQUEST     0xe0
-    #define DATA             0xf0
+    #define DATA                0xf0
 
     //rosctrs
-    #define ROSCTR_JOB         0x01
-    #define ROSCTR_ACK         0x02
+    #define ROSCTR_JOB          0x01
+    #define ROSCTR_ACK          0x02
     #define ROSCTR_ACK_DATA     0x03
-    #define ROSCTR_USER_DATA     0x07
+    #define ROSCTR_USER_DATA    0x07
     %}
 
 flow S7COMM_Flow(is_orig: bool) {
