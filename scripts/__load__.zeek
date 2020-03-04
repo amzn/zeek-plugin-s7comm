@@ -1,5 +1,5 @@
-@load ./consts
-@load ./main.bro
+@load ./consts.zeek
+@load ./main.zeek
 
 
 
