@@ -31,22 +31,22 @@ type S7comm_PDU(is_orig: bool) = case is_orig of {
 type S7comm_Request = record {
     header: ISO_COTP;
     data: case(header.cotp_type) of {
-        CONNECT_REQUEST -> connectRequest   : Connection_Header(header);
-        CONNECT_CONFIRM -> connectConfirm   : Connection_Header(header);
-        DATA            -> dataInfo         : S7comm_Data;
-        default         -> unknown          : bytestring &restofdata;
-        };
+            CONNECT_REQUEST,
+            CONNECT_CONFIRM -> connect      : Connection_Header(header);
+            DATA            -> dataInfo     : S7comm_Data;
+            default         -> unknown      : bytestring &restofdata;
+            };
     } &byteorder=bigendian;
 
 ##! switch for the response portion
 type S7comm_Response = record {
     header: ISO_COTP;
     data: case(header.cotp_type) of {
-        CONNECT_REQUEST -> connectRequest   : Connection_Header(header);
-        CONNECT_CONFIRM -> connectConfirm   : Connection_Header(header);
-        DATA            -> dataInfo         : S7comm_Data;
-        default         -> unknown          : bytestring &restofdata;
-        };
+            CONNECT_REQUEST,
+            CONNECT_CONFIRM -> connect      : Connection_Header(header);
+            DATA            -> dataInfo     : S7comm_Data;
+            default         -> unknown      : bytestring &restofdata;
+            };
     } &byteorder=bigendian;
 
 ##! Structure of the iso-cotp, used for iso_cotp.log

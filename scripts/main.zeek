@@ -93,13 +93,14 @@ function parse_data(data:string, data_index:count, parse_type:count, item_count:
                 data_index += 1;
                 ##! address, comprised of byte and bit address
                 address = bytestring_to_count("\x00"+data[data_index:data_index+3]);
+                ##! wireshark format of (area data_block_num.DBX address transport_size length)
+                output[output_index] = fmt("%s %d.DBX %s %s %d",
+                                            areas[area],
+                                            data_block_num,
+                                            fmt("%d.%d", address/8, address%8),
+                                            item_transport_sizes[transport_size],
+                                            data_length);
                 }
-            ##! wireshark format of (area data_block_num.DBX address transport_size length)
-            output[output_index] = fmt("%s %d.DBX %s %s %d", areas[area],
-                                    data_block_num,
-                                    fmt("%d.%d", address/8, address%8),
-                                    item_transport_sizes[transport_size],
-                                    data_length);
             break;
         case 2:
             ##! return code
@@ -113,8 +114,10 @@ function parse_data(data:string, data_index:count, parse_type:count, item_count:
             if (data_length > 0) {
                 ##! based on data type, switch and format using bytestring_to_double/int/count
                 switch (transport_size) {
-                    case 4, ##! BYTE/WORD/DWORD
-                         5, ##! INTEGER
+                    case 4: ##! BYTE/WORK/DWORD
+                        data_value = fmt("0x%s", bytestring_to_hexstr(data[data_index:data_index+data_length/8]));
+                        break;
+                    case 5, ##! INTEGER
                          6: ##! DOUBLE_INTEGER
                         data_value = fmt("%d", bytestring_to_count(data[data_index:data_index+data_length/8]));
                         break;
@@ -131,8 +134,9 @@ function parse_data(data:string, data_index:count, parse_type:count, item_count:
                     }
                 }
             ##! custom format
-            output[output_index] = fmt("%s %s", data_transport_sizes[transport_size],
-                                    data_value);
+            output[output_index] = fmt("%s %s",
+                                        data_transport_sizes[transport_size],
+                                        data_value);
             break;
         case 3:
             ##! memory area
@@ -171,10 +175,11 @@ event iso_cotp(c: connection, is_orig: bool,
 
 event s7comm_data(c:connection, is_orig:bool,
                     data:string) {
-    local data_index: count=0;
     if(!c?$s7comm) {
         c$s7comm = [$ts=network_time(), $uid=c$uid, $id=c$id];
         }
+
+    local data_index: count=0;
     data_index += 1;
     ##! ROSCTR
     local rosctr: count = bytestring_to_count(data[data_index]);
@@ -228,6 +233,21 @@ event s7comm_data(c:connection, is_orig:bool,
                             break;
                         case 0x03: ##! Ack_Data
                             data_info = parse_data(data, data_index, 2, item_count);
+                            break;
+                        }
+                    break;
+                case 0x05: ##! Write Var
+                    ##! item count
+                    item_count = bytestring_to_count(data[data_index]);
+                    c$s7comm$item_count = item_count;
+                    data_index += 1;
+                    ##! use item_count to get all data instead of 1st entry only?
+                    switch(rosctr) {
+                        case 0x01: ##! job
+                            data_info = parse_data(data, data_index, 1, item_count);
+                            break;
+                        case 0x03: ##! Ack_Data
+                            data_info[0] = return_codes[bytestring_to_count(data[data_index])];
                             break;
                         }
                     break;
@@ -358,7 +378,7 @@ event s7comm_data(c:connection, is_orig:bool,
                                     data_index += 1;
                                     data_info = parse_data(data, data_index, 1, item_count);
                                     break;
-                                case 0x00,    ##! push
+                                case 0x00,   ##! push
                                     0x08:    ##! response
                                     data_info = parse_data(data, data_index, 2, item_count);
                                     break;
@@ -383,9 +403,10 @@ event s7comm_data(c:connection, is_orig:bool,
                     if (data_length > 0) {
                         switch (subfunction) {
                             case 1: ##! read szl
-                                data_info[data_info_index] = fmt("%s id=0x%s index=%s", data_transport_sizes[transport_size],
-                                                        bytestring_to_hexstr(data[data_index:data_index+2]),
-                                                        bytestring_to_hexstr(data[data_index+2:data_index+4]));
+                                data_info[data_info_index] = fmt("%s id=0x%s index=%s",
+                                                                data_transport_sizes[transport_size],
+                                                                bytestring_to_hexstr(data[data_index:data_index+2]),
+                                                                bytestring_to_hexstr(data[data_index+2:data_index+4]));
                                 data_info_index += 1;
                                 break;
                             case 2: ##! message service
@@ -404,7 +425,7 @@ event s7comm_data(c:connection, is_orig:bool,
     c$s7comm$parameter = parameter;
     c$s7comm$data_info = data_info;
 
-    Log::write(S7comm::LOG_S7COMM, c$s7comm);
+    Log::write(LOG_S7COMM, c$s7comm);
     delete c$s7comm;
     }
 

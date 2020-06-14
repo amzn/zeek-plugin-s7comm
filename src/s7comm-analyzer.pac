@@ -52,9 +52,9 @@ flow S7COMM_Flow(is_orig: bool) {
                 }
             connection()->bro_analyzer()->ProtocolConfirmation();
             BifEvent::generate_s7comm_data(connection()->bro_analyzer(),
-                            connection()->bro_analyzer()->Conn(),
-                            is_orig(),
-                            bytestring_to_val(${s7comm_data.data}));
+                                            connection()->bro_analyzer()->Conn(),
+                                            is_orig(),
+                                            bytestring_to_val(${s7comm_data.data}));
             }
         return true;
         %}

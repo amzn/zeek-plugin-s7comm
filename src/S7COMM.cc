@@ -28,8 +28,8 @@ void S7COMM_Analyzer::EndpointEOF(bool is_orig) {
 void S7COMM_Analyzer::DeliverStream(int len, const u_char* data, bool orig) {
     tcp::TCP_ApplicationAnalyzer::DeliverStream(len, data, orig);
     assert(TCP());
-    if(TCP()->IsPartial())
-        return;
+    //if(TCP()->IsPartial())
+    //    return;
     // If only one side had a content gap, we could still try to
     // deliver data to the other side if the script layer can handle this.
     if(had_gap)

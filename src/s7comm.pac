@@ -6,8 +6,8 @@
     %}
 
 analyzer S7COMM withcontext {
-    connection:    S7COMM_Conn;
-    flow:        S7COMM_Flow;
+    connection:     S7COMM_Conn;
+    flow:           S7COMM_Flow;
     };
 
 %include s7comm-protocol.pac
