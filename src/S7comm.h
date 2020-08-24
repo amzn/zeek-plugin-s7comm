@@ -6,10 +6,10 @@
 
 namespace analyzer { 
     namespace s7comm {
-        class S7COMM_Analyzer : public tcp::TCP_ApplicationAnalyzer {
+        class S7comm_Analyzer : public tcp::TCP_ApplicationAnalyzer {
             public:
-                S7COMM_Analyzer(Connection* conn);
-                virtual ~S7COMM_Analyzer();
+                S7comm_Analyzer(Connection* conn);
+                virtual ~S7comm_Analyzer();
 
                 virtual void Done();
                 virtual void DeliverStream(int len, const u_char* data, bool orig);
@@ -18,11 +18,11 @@ namespace analyzer {
                 virtual void EndpointEOF(bool is_orig);
 
                 static analyzer::Analyzer* Instantiate(Connection* conn) { 
-                    return new S7COMM_Analyzer(conn);
+                    return new S7comm_Analyzer(conn);
                     }
 
             protected:
-                binpac::S7COMM::S7COMM_Conn* interp;
+                binpac::S7comm::S7comm_Conn* interp;
                 bool had_gap;
             };
         } 

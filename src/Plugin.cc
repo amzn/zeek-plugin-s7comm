@@ -2,18 +2,18 @@
 #include "analyzer/Component.h"
 
 namespace plugin { 
-    namespace Zeek_S7COMM {
+    namespace Zeek_S7comm {
         Plugin plugin;
         }
     }
 
-using namespace plugin::Zeek_S7COMM;
+using namespace plugin::Zeek_S7comm;
 
 plugin::Configuration Plugin::Configure() {
-    AddComponent(new ::analyzer::Component("S7COMM", ::analyzer::s7comm::S7COMM_Analyzer::Instantiate));
+    AddComponent(new ::analyzer::Component("S7comm", ::analyzer::s7comm::S7comm_Analyzer::Instantiate));
     
     plugin::Configuration config;
-    config.name = "Zeek::S7COMM";
-    config.description = "S7COMM Protocol analyzer";
+    config.name = "Zeek::S7comm";
+    config.description = "S7 communnication protocol analyzer";
     return config;
     }

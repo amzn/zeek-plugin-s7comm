@@ -5,9 +5,9 @@
     #include "events.bif.h"
     %}
 
-analyzer S7COMM withcontext {
-    connection:     S7COMM_Conn;
-    flow:           S7COMM_Flow;
+analyzer S7comm withcontext {
+    connection:     S7comm_Conn;
+    flow:           S7comm_Flow;
     };
 
 %include s7comm-protocol.pac

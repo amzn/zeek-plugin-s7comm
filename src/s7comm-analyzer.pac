@@ -1,9 +1,9 @@
 ## Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 ## SPDX-License-Identifier: BSD-3-Clause
 
-connection S7COMM_Conn(bro_analyzer: BroAnalyzer) {
-    upflow   = S7COMM_Flow(true);
-    downflow = S7COMM_Flow(false);
+connection S7comm_Conn(bro_analyzer: BroAnalyzer) {
+    upflow   = S7comm_Flow(true);
+    downflow = S7comm_Flow(false);
     };
 
 %header{
@@ -28,7 +28,7 @@ connection S7COMM_Conn(bro_analyzer: BroAnalyzer) {
     #define ROSCTR_USER_DATA    0x07
     %}
 
-flow S7COMM_Flow(is_orig: bool) {
+flow S7comm_Flow(is_orig: bool) {
     # flowunit = S7comm_PDU(is_orig) withcontext(connection, this);
     datagram = S7comm_PDU(is_orig) withcontext(connection, this);
 

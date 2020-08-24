@@ -1,31 +1,31 @@
-#include "S7COMM.h"
+#include "S7comm.h"
 #include "analyzer/protocol/tcp/TCP_Reassembler.h"
 #include "Reporter.h"
 #include "events.bif.h"
 
 using namespace analyzer::s7comm;
 
-S7COMM_Analyzer::S7COMM_Analyzer(Connection* c): tcp::TCP_ApplicationAnalyzer("S7COMM", c) {
-    interp = new binpac::S7COMM::S7COMM_Conn(this);
+S7comm_Analyzer::S7comm_Analyzer(Connection* c): tcp::TCP_ApplicationAnalyzer("S7comm", c) {
+    interp = new binpac::S7comm::S7comm_Conn(this);
     had_gap = false;
     }
 
-S7COMM_Analyzer::~S7COMM_Analyzer() {
+S7comm_Analyzer::~S7comm_Analyzer() {
     delete interp;
     }
 
-void S7COMM_Analyzer::Done() {
+void S7comm_Analyzer::Done() {
     tcp::TCP_ApplicationAnalyzer::Done();
     interp->FlowEOF(true);
     interp->FlowEOF(false);
     }
 
-void S7COMM_Analyzer::EndpointEOF(bool is_orig) {
+void S7comm_Analyzer::EndpointEOF(bool is_orig) {
     tcp::TCP_ApplicationAnalyzer::EndpointEOF(is_orig);
     interp->FlowEOF(is_orig);
     }
 
-void S7COMM_Analyzer::DeliverStream(int len, const u_char* data, bool orig) {
+void S7comm_Analyzer::DeliverStream(int len, const u_char* data, bool orig) {
     tcp::TCP_ApplicationAnalyzer::DeliverStream(len, data, orig);
     assert(TCP());
     //if(TCP()->IsPartial())
@@ -43,7 +43,7 @@ void S7COMM_Analyzer::DeliverStream(int len, const u_char* data, bool orig) {
         }
     }
 
-void S7COMM_Analyzer::Undelivered(uint64_t seq, int len, bool orig) {
+void S7comm_Analyzer::Undelivered(uint64_t seq, int len, bool orig) {
     tcp::TCP_ApplicationAnalyzer::Undelivered(seq, len, orig);
     had_gap = true;
     interp->NewGap(orig, len);
