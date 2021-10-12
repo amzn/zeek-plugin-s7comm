@@ -1,5 +1,5 @@
-%include binpac.pac
-%include bro.pac
+%include zeek/binpac.pac
+%include zeek/zeek.pac
 
 %extern{
     #include "events.bif.h"
