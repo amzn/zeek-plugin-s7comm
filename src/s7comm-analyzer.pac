@@ -1,7 +1,7 @@
 ## Copyright 2019 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 ## SPDX-License-Identifier: BSD-3-Clause
 
-connection S7comm_Conn(bro_analyzer: BroAnalyzer) {
+connection S7comm_Conn(zeek_analyzer: ZeekAnalyzer) {
     upflow   = S7comm_Flow(true);
     downflow = S7comm_Flow(false);
     };
@@ -34,11 +34,11 @@ flow S7comm_Flow(is_orig: bool) {
 
     function iso_cotp(header: ISO_COTP): bool %{
         if(::iso_cotp) {
-            // connection()->bro_analyzer()->ProtocolConfirmation();
-            BifEvent::generate_iso_cotp(connection()->bro_analyzer(),
-                            connection()->bro_analyzer()->Conn(),
-                            is_orig(),
-                            ${header.cotp_type});
+            // connection()->zeek_analyzer()->ProtocolConfirmation();
+            zeek::BifEvent::enqueue_iso_cotp(connection()->zeek_analyzer(),
+                                             connection()->zeek_analyzer()->Conn(),
+                                             is_orig(),
+                                             ${header.cotp_type});
             }
         return true;
         %}
@@ -46,15 +46,15 @@ flow S7comm_Flow(is_orig: bool) {
     ##! handles s7comm.log and s7data.log
     function s7comm_data(s7comm_data: S7comm_Data): bool %{
         if(::s7comm_data) {
-            // check protocol for 0x32 
+            // check protocol for 0x32
             if (${s7comm_data.data[0]} != S7_HEADER) {
                 return false;
                 }
-            connection()->bro_analyzer()->ProtocolConfirmation();
-            BifEvent::generate_s7comm_data(connection()->bro_analyzer(),
-                                            connection()->bro_analyzer()->Conn(),
-                                            is_orig(),
-                                            bytestring_to_val(${s7comm_data.data}));
+            connection()->zeek_analyzer()->ProtocolConfirmation();
+            zeek::BifEvent::enqueue_s7comm_data(connection()->zeek_analyzer(),
+                                                connection()->zeek_analyzer()->Conn(),
+                                                is_orig(),
+                                                to_stringval(${s7comm_data.data}));
             }
         return true;
         %}
@@ -63,7 +63,7 @@ flow S7comm_Flow(is_orig: bool) {
 refine typeattr ISO_COTP += &let {
     proc: bool = $context.flow.iso_cotp(this);
     };
-    
+
 refine typeattr S7comm_Data += &let {
     proc: bool = $context.flow.s7comm_data(this);
     };

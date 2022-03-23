@@ -12,18 +12,18 @@ export {
         LOG_ISO_COTP,
         LOG_S7COMM,
         };
-    
+
     type ISO_COTP: record {
-        ts      : time &optional &log;      ## Time when the command was sent.        
-        uid     : string &optional &log;    ## Unique ID for the connection.        
+        ts      : time &optional &log;      ## Time when the command was sent.
+        uid     : string &optional &log;    ## Unique ID for the connection.
         id      : conn_id &optional &log;   ## The connection's 4-tuple of endpoint addresses/ports.
-    
+
         pdu_type: string &optional &log;    ## COTP message type.
         };
     global log_iso_cotp: event(rec: ISO_COTP);
-    
+
     type S7comm: record {
-        ts          : time &optional &log;          ## Time when the command was sent.    
+        ts          : time &optional &log;          ## Time when the command was sent.
         uid         : string &optional &log;        ## Unique ID for the connection.
         id          : conn_id &optional &log;       ## The connection's 4-tuple of endpoint addresses/ports.
 
@@ -165,11 +165,12 @@ event iso_cotp(c: connection, is_orig: bool,
                 pdu_type: count) &priority=5 {
     if(!c?$iso_cotp) {
         c$iso_cotp = [$ts=network_time(), $uid=c$uid, $id=c$id];
+        add c$service["iso_cotp"];
         }
-        
+
     c$iso_cotp$ts = network_time();
     c$iso_cotp$pdu_type = cotp_types[pdu_type];
-    
+
     Log::write(S7comm::LOG_ISO_COTP, c$iso_cotp);
     }
 
@@ -177,6 +178,7 @@ event s7comm_data(c:connection, is_orig:bool,
                     data:string) {
     if(!c?$s7comm) {
         c$s7comm = [$ts=network_time(), $uid=c$uid, $id=c$id];
+        add c$service["s7comm"];
         }
 
     local data_index: count=0;
