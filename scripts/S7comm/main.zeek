@@ -21,6 +21,7 @@ export {
         pdu_type: string &optional &log;    ## COTP message type.
         };
     global log_iso_cotp: event(rec: ISO_COTP);
+    global log_policy_iso_cotp: Log::PolicyHook;
 
     type S7comm: record {
         ts          : time &optional &log;          ## Time when the command was sent.
@@ -33,6 +34,7 @@ export {
         data_info   : string_vec &optional &log;    ## contains data of 1st entry
         };
     global log_s7comm: event(rec: S7comm);
+    global log_policy: Log::PolicyHook;
     }
 
 redef record connection += {
@@ -51,11 +53,13 @@ event zeek_init() &priority=5 {
     Log::create_stream(S7comm::LOG_ISO_COTP,
                 [$columns=ISO_COTP,
                 $ev=log_iso_cotp,
-                $path="iso_cotp"]);
+                $path="iso_cotp",
+                $policy=log_policy_iso_cotp]);
     Log::create_stream(S7comm::LOG_S7COMM,
                 [$columns=S7comm,
                 $ev=log_s7comm,
-                $path="s7comm"]);
+                $path="s7comm",
+                $policy=log_policy]);
     Analyzer::register_for_ports(Analyzer::ANALYZER_S7COMM, ports);
     }
 
